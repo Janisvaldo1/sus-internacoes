@@ -80,3 +80,20 @@ Os dois scripts podem rodar mais de uma vez sem problema: arquivos que já exist
 - [ ] K-means agrupando as cidades pelo perfil de internação
 - [ ] Árvore de decisão para óbito na internação
 - [ ] Juntar os nomes dos municípios e as descrições da CID-10
+
+## Progresso
+
+| Etapa | Unidade | O que foi feito | Resultado | Status |
+|---|---|---|---|---|
+| Extração | I | `extrair.py` baixa os 12 meses de 2025 do DATASUS | 12 arquivos `.dbc` de MG | ✅ |
+| Pré-processamento | I | `transformar.py` converte `.dbc` em `.dbf` | 12 arquivos `.dbf` | ✅ |
+| Seleção da região | I | Cidades com 5+ internações no hospital de Aiuruoca | 21 cidades (98% do movimento) | ✅ |
+| Integração e carga | I | Junta os 12 meses e salva o data mart | 18.862 internações, 115 colunas | ✅ |
+| Validação | I | Totais mensais conferidos com o TabNet | Bateu mês a mês (2.200) | ✅ |
+
+| Outliers dos meses | II | Quartis nos 12 meses do hospital | Nenhum mês fora do padrão | ✅ |
+| Outliers de dias | II | Quartis em `DIAS_PERM` | Limite 11 dias; 1.189 internações longas (6,3%), mais respiratórias; as mais longas em Juiz de Fora e BH | ✅ |
+| Outliers no valor pago (`VAL_TOT`) | II | ✅ | Limite de R$ 2.138; 2.956 internações caras (15,7%), coração no topo e câncer em segundo; caro não é o mesmo que longo |
+| Perfil das cidades | II | Porcentagem de cada grupo do CID por cidade | — | ✅ | Tabela de 21 cidades × 22 grupos do CID em porcentagem; destaques: Santa Rita do Jacutinga 31% respiratório, Jesuânia 15,9% partos |
+| K-means | II | Escolher o K pelo joelho do SSE e agrupar as 21 cidades | — | ✅ | 
+| K-means e escolha do K pelo joelho (`clusters.py`) | II / V | ✅ | Joelho entre K = 4 e 5; escolhido K = 5 por separar melhor. Dois perfis (respiratório e circulatório) e três cidades atípicas |
